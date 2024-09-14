@@ -7,16 +7,16 @@ services:
       - env_file_app.env
     ports:
       - "8090:80"
-    depends_on:
-      - autenticacion
-      - inventario
-      - contabilidad
-      - predial
-      - presupuesto
-      - tesoreria
-      - activos
-      - industriacomercio
-      - nomina
+    #depends_on:
+    #  - autenticacion
+    #  - inventario
+    #  - contabilidad
+    #  - predial
+    #  - presupuesto
+    #  - tesoreria
+    #  - activos
+    #  - industriacomercio
+    #  - nomina
   autenticacion: #####servicio#####
     container_name: contenedor-siaf-autenticacion
     image: soportetecnologiasiaf/servicioautenticacion:#{v_imagen_serv_admin}#

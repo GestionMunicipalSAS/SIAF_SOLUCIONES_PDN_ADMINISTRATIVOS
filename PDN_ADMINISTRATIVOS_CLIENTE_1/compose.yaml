@@ -1,0 +1,134 @@
+version: '3'
+services:
+  app-siaf:
+    container_name: contenedor-app-siaf
+    image: soportetecnologiasiaf/siaf-app-env:#{v_imagen_app_admin}#
+    env_file:
+      - env_file_app.env
+    ports:
+      - "80:80"
+    depends_on:
+      - autenticacion
+      - inventario
+      - contabilidad
+      - predial
+      - presupuesto
+      - tesoreria
+      - activos
+      - industriacomercio
+      - nomina
+  autenticacion: #####servicio#####
+    container_name: contenedor-siaf-autenticacion
+    image: soportetecnologiasiaf/servicioautenticacion:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3020:80"
+      #- "3021:443"
+    networks:
+      - red-interna-siafs
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 512MB
+  inventario: #####servicio#####
+    container_name: contenedor-siaf-inventario
+    image: soportetecnologiasiaf/servicioinventario:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3010:80"
+      #- "3011:443"
+    networks:
+      - red-interna-siafs
+  contabilidad: #####servicio#####
+    container_name: contenedor-siaf-contabilidad
+    image: soportetecnologiasiaf/serviciocontabilidad:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3030:80"
+      #- "3031:443"
+    networks:
+      - red-interna-siafs
+    depends_on:
+      - inventario
+  predial: #####servicio#####
+    container_name: contenedor-siaf-predial
+    image: soportetecnologiasiaf/serviciopredial:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3060:80"
+      #- "3061:443"
+    networks:
+      - red-interna-siafs
+    depends_on:
+      - contabilidad
+  presupuesto: #####servicio#####
+    container_name: contenedor-siaf-presupuesto
+    image: soportetecnologiasiaf/serviciopresupuesto:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3040:80"
+      #- "3041:443"
+    networks:
+      - red-interna-siafs
+    depends_on:
+      - contabilidad
+      #- inventario
+  tesoreria: #####servicio#####
+    container_name: contenedor-siaf-tesoreria
+    image: soportetecnologiasiaf/serviciotesoreria:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3050:80"
+      #- "3051:443"
+    networks:
+      - red-interna-siafs
+    depends_on:
+      - contabilidad
+      - inventario
+  activos: #####servicio#####
+    container_name: contenedor-siaf-activos-fijos
+    image: soportetecnologiasiaf/servicioactivosfijos:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3080:80"
+      #- "3051:443"
+    networks:
+      - red-interna-siafs
+  industriacomercio: #####servicio#####
+    container_name: contenedor-siaf-industria-comercio
+    image: soportetecnologiasiaf/servicioindustriacomercio:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "3090:80"
+      #- "3051:443"
+    networks:
+      - red-interna-siafs
+  nomina: #####servicio#####
+    container_name: contenedor-siaf-nomina
+    image: soportetecnologiasiaf/servicionomina:#{v_imagen_serv_admin}#
+    env_file:
+      - env_file.env
+    ports:
+      - "4000:80"
+      #- "3051:443"
+    networks:
+      - red-interna-siafs
+  portainer-monitor: #####monitor-recursos#####
+    image: portainer/portainer-ce
+    container_name: contenedor-portainer-monitor
+    restart: always
+    ports:
+      - "4080:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  red-interna-siafs:
